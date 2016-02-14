@@ -41,7 +41,7 @@ public class DbgView implements Initializable {
 
 	private static final String ICON_STYLE = "-fx-font-family: FontAwesome; -fx-font-size: 1em;";
 	
-	private final DbgController dbgController = new DbgController();
+	final DbgController dbgController = new DbgController();
 	
 	private final ObservableList<TreeItem<ModFunc>> treeModules = FXCollections.observableArrayList();
 	

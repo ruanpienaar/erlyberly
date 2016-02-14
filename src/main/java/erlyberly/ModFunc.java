@@ -8,16 +8,22 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public class ModFunc implements Comparable<ModFunc> {
 
 	private final String moduleName;
-	
+
 	private final String funcName;
-	
+
 	private final int arity;
-	
+
 	private final boolean exported;
-	
+
 	private final boolean synthetic;
 
 	public ModFunc(String moduleName, String funcName, int arity, boolean exported, boolean synthetic) {
+        // System.out.println(moduleName);
+        // System.out.println(funcName);
+        // System.out.println(arity);
+        // System.out.println(exported);
+        // System.out.println(synthetic);
+
 		this.moduleName = moduleName;
 		this.funcName = funcName;
 		this.arity = arity;
@@ -52,7 +58,7 @@ public class ModFunc implements Comparable<ModFunc> {
 		}
 		return funcName + "/" + arity;
 	}
-	
+
 	public String toFullString() {
 		if(funcName == null) {
 			return moduleName;
@@ -63,13 +69,13 @@ public class ModFunc implements Comparable<ModFunc> {
 	public static ModFunc toFunc(OtpErlangAtom moduleName, OtpErlangObject e, boolean exported)  {
 		OtpErlangAtom funcNameAtom = (OtpErlangAtom) ((OtpErlangTuple) e).elementAt(0);
 		OtpErlangLong arity = (OtpErlangLong) ((OtpErlangTuple) e).elementAt(1);
-		
+
 		String funcName = funcNameAtom.atomValue();
-		
+
 		return new ModFunc(
-			moduleName.atomValue(), 
-			funcName, 
-			(int)arity.longValue(), 
+			moduleName.atomValue(),
+			funcName,
+			(int)arity.longValue(),
 			exported,
 			funcName.startsWith("-")
 		);
@@ -77,9 +83,9 @@ public class ModFunc implements Comparable<ModFunc> {
 
 	public static ModFunc toModule(OtpErlangAtom moduleName) {
 		return new ModFunc(
-			moduleName.atomValue(), 
-			null, 
-			0, 
+			moduleName.atomValue(),
+			null,
+			0,
 			false,
 			false
 		);
@@ -90,7 +96,7 @@ public class ModFunc implements Comparable<ModFunc> {
 		if(funcName == null) {
 			return moduleName.compareTo(o.moduleName);
 		}
-		
+
 		int comp = funcName.compareTo(o.funcName);
 		if(comp == 0) {
 			comp =  Integer.compare(arity, o.arity);
@@ -137,6 +143,6 @@ public class ModFunc implements Comparable<ModFunc> {
             return false;
         return true;
     }
-	
-	
+
+
 }

@@ -32,8 +32,13 @@ public class DbgController implements Initializable {
 	private volatile boolean collectingSeqTraces;
 
 	public void setCollectingTraces(boolean collecting) {
-		collectingTraces = collecting;
+        System.out.println(this.hashCode());
+		this.collectingTraces = collecting;
 	}
+    
+    public boolean getCollectingTraces(){
+        return this.collectingSeqTraces;
+    }
 
 	@Override
 	public void initialize(URL url, ResourceBundle r) {
@@ -60,17 +65,20 @@ public class DbgController implements Initializable {
 			traceModFunc(function);
 	}
 
-	private void traceModFunc(ModFunc function) {
+	void traceModFunc(ModFunc function) {
 		try {
 			ErlyBerly.nodeAPI().startTrace(function);
-			
-			traces.add(function);
+			storeTraceModFunc(function);
 			
 			setCollectingTraces(true);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
+    
+    void storeTraceModFunc(ModFunc function){
+        traces.add(function);
+    }
 	
 	private void onRemoveTracer(ActionEvent e, ModFunc function) {
 		try {
@@ -87,6 +95,7 @@ public class DbgController implements Initializable {
 		ArrayList<ModFunc> tracesCopy = new ArrayList<ModFunc>(traces);
 		
 		for (ModFunc function : tracesCopy) {
+            System.out.println("Allying TRACE " + function);
 			try {
 				ErlyBerly.nodeAPI().startTrace(function);
 			} catch (Exception e) {
@@ -124,7 +133,8 @@ public class DbgController implements Initializable {
 		@Override
 		public void run() {
 			while (true) {
-				if(collectingTraces && ErlyBerly.nodeAPI().isConnected()) {
+//                System.out.println("collectingTraces : " + collectingTraces + " " + this.toString());
+				if(getCollectingTraces() && ErlyBerly.nodeAPI().isConnected()) {
 					try {
 						final ArrayList<TraceLog> collectTraceLogs = ErlyBerly.nodeAPI().collectTraceLogs();
 						
@@ -135,7 +145,7 @@ public class DbgController implements Initializable {
 				}
 				
 				try {
-					Thread.sleep(100);
+					Thread.sleep(10000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
